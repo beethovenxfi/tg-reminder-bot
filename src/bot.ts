@@ -228,14 +228,14 @@ export async function runCheckerOnce() {
 //   },
 // ]);
 
-// === Start polling ===
-bot.start();
-log('Bot started with grammY');
-
 // === Run checker once if env set ===
 if (process.env.RUN_ONCE === 'true') {
     runCheckerOnce().then(() => {
         log('Done.');
         process.exit(0);
     });
+} else {
+    // === Start polling ===
+    bot.start();
+    log('Bot started with grammY');
 }
