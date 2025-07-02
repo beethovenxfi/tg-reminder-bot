@@ -13,6 +13,7 @@
     "dependencies": {
         "@types/node": "^24.0.10",
         "@types/node-telegram-bot-api": "^0.64.9",
+        "dotenv": "^17.0.1",
         "grammy": "^1.36.3",
         "node-telegram-bot-api": "^0.66.0",
         "typescript": "^5.8.3",

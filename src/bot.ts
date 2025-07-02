@@ -3,6 +3,8 @@ import { createPublicClient, http, getContract, Address } from 'viem';
 import { mainnet } from 'viem/chains';
 import fs from 'fs';
 import { AllConfig } from './types';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // === Config ===
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
