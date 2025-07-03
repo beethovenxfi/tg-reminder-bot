@@ -101,23 +101,34 @@ bot.command('add_gauge_reminder', async (ctx) => {
         if (!tokenFound) {
             return ctx.reply('❌ Token not found in gauge.');
         }
+
+        // Also check when it will run out:
+        const rewardData = (await gauge.read.reward_data([rewardToken as Address])) as any;
+        const periodFinish = BigInt(rewardData[1]);
+        const now = BigInt(Math.floor(Date.now() / 1000));
+        const secondsLeft = Number(periodFinish - now);
+        const hoursLeft = secondsLeft / 3600;
+
+        const chatId = String(ctx.chat?.id);
+        if (!config[chatId]) config[chatId] = { gauges: [] };
+        config[chatId].gauges.push({
+            gaugeAddress,
+            rewardToken,
+            hoursBefore,
+            userToPing,
+        });
+        saveConfig();
+
+        await ctx.reply(
+            `✅ Gauge added!\n` +
+                `Will alert @${userToPing} ${hoursBefore}h before rewards run out.\n\n` +
+                `⏰ Current estimate: rewards run out in ~${hoursLeft.toFixed(2)} hours.`,
+        );
+        log(`Added gauge for chat ${chatId}:`, gaugeAddress, rewardToken);
     } catch (err) {
         error(`Failed to validate gauge ${gaugeAddress}:`, err);
         return ctx.reply('❌ Could not read gauge contract.');
     }
-
-    const chatId = String(ctx.chat?.id);
-    if (!config[chatId]) config[chatId] = { gauges: [] };
-    config[chatId].gauges.push({
-        gaugeAddress,
-        rewardToken,
-        hoursBefore,
-        userToPing,
-    });
-    saveConfig();
-
-    await ctx.reply(`✅ Gauge added!\nWill alert @${userToPing} ${hoursBefore}h before rewards run out.`);
-    log(`Added gauge for chat ${chatId}:`, gaugeAddress, rewardToken);
 });
 
 bot.command('remove_gauge_reminder', async (ctx) => {
