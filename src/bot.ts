@@ -159,12 +159,32 @@ bot.command('remove_gauge_reminder', async (ctx) => {
     log(`Removed gauge for chat ${chatId}: ${gaugeAddress} ${rewardToken}`);
 });
 
+bot.command('list_gauge_reminders', async (ctx) => {
+    const chatId = String(ctx.chat.id);
+
+    if (!config[chatId] || config[chatId].gauges.length === 0) {
+        await ctx.reply(`ℹ️ No gauge reminders set for this group.`);
+        return;
+    }
+
+    const lines = config[chatId].gauges.map((gauge, i) => {
+        return `#${i + 1}  
+Gauge: \`${gauge.gaugeAddress}\`
+Reward Token: \`${gauge.rewardToken}\`
+Hours Before: ${gauge.hoursBefore}h
+User to Ping: @${gauge.userToPing}`;
+    });
+
+    await ctx.reply(`📋 *Active Gauge Reminders:*\n\n${lines.join('\n\n')}`, { parse_mode: 'Markdown' });
+});
+
 // === /help ===
 bot.command('help', (ctx) => {
     return ctx.reply(
         `Usage:\n` +
             `/add_gauge_reminder <gaugeAddress> <rewardToken> <hoursBefore> <usernameToPing>\n\n` +
             `/remove_gauge_reminder <gaugeAddress> <rewardToken>\n\n` +
+            `/list_gauge_reminders\n\n` +
             `Example:\n/add_gauge_reminder 0xGauge... 0xToken... 24 myusername`,
     );
 });
