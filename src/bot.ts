@@ -216,7 +216,7 @@ export async function runCheckerOnce() {
 
                 log(`Gauge ${gaugeCfg.gaugeAddress} Token ${gaugeCfg.rewardToken}: ${hoursLeft.toFixed(2)}h left.`);
 
-                if (hoursLeft <= gaugeCfg.hoursBefore && secondsLeft > 0) {
+                if (hoursLeft <= gaugeCfg.hoursBefore) {
                     const msg =
                         `⚠️ Rewards for token ${gaugeCfg.rewardToken} on gauge ${
                             gaugeCfg.gaugeAddress
